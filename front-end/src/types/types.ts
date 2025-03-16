@@ -5,33 +5,19 @@ enum Role {
 
 export interface Message {
     id: string   
-    createdAt: string 
-    updatedAt: string 
-    content: string
-    room: Room     
-    roomId: string   
-    senderId: string   
-    senderName: string
+    type: 'q' | 'a'
+    content?: string
+    thinkContent?: string
 }
 export interface Room {
-    id?: string    
-    createdAt?: string  
-    updatedAt?: string  
     roomName: string
-    roomType: string
-    messages?: Message[]
-    authorId?: string    
-    userIDs: string[]  
-    users?: User[]    
+    messages: Message[]
+    roomType?: string
 }
 export interface User {
-    id: string   
-    createdAt: string 
-    email: string   
-    username: string   
-    password: string
+    id: string
+    username: string
+    roomname: string
     isOnline?: boolean
-    role: Role     
-    roomIDs: string[] 
-    rooms: Room[]   
+    role?: Role     
 }

@@ -5,13 +5,14 @@ node_modules
 
 
 # production
-/front-end/build
+/front-end/dist
+/front-end/dev-dist
 
-/front-end/.bit
 
 # misc
+/front-end/node_modules
 /front-end/.DS_Store
-/front-end/.env.local
+/front-end/*.local 
 /front-end/.env.development.local
 /front-end/.env.test.local
 /front-end/.env.production.local

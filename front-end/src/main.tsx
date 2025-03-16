@@ -2,9 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 // import "bootstrap/dist/css/bootstrap.css";
 import "font-awesome/css/font-awesome.css";
-
-import "./main.scss";
 import App from "./App";
+import './styles/main.scss'
 
 // const loggerMiddleware = createLogger();
 

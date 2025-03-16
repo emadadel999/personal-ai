@@ -1,13 +1,11 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { prisma } from './api/data/db';
 import HttpError from "./api/helpers/httpError";
 import router from './api/routes';
-import { socketIo_server } from "./api/socket-io/index";
 import { AddressInfo } from "net";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import qs from 'qs';
 
 dotenv.config();
 const app = express() as Express;
@@ -16,6 +14,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 
+app.set('query parser', function (str: string) {
+  return qs.parse(str, { /* custom options */ })
+})
 
 /* Routes */
 app.use("/api", router);
@@ -35,15 +36,8 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
   res.json({ message: error.message });
 });
 
-// const express_server = app.listen(process.env.PORT, function () {
-//   const addressInfo = express_server?.address() as AddressInfo
-//   console.log("Listening to port", addressInfo.port);
-// });
 
 const express_server = createServer(app);
-
-socketIo_server(express_server);
-
 
 express_server.listen(process.env.PORT, function () {
   const addressInfo = express_server?.address() as AddressInfo
