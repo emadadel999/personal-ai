@@ -1,76 +1,96 @@
-import React, { useEffect, useReducer, useState } from "react";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import React, { useState } from "react";
 import Authenticate from "./pages/Authenticate/Authenticate";
-import Home from "./pages/Home/Home";
-import { loadUserData, removeUserData } from "./shared/localStorage";
-import { Socket } from "socket.io-client";
-import { Room, User } from "./types/types";
-import { initialMyRoom, MyRoomContext, MyRoomDispatchContext, myRoomReducer } from "./shared/reducers/MyRoomContext";
+import ChatRoom from "./pages/ChatRoom/ChatRoom";
+import { abortAll, deleteModel, MODELS, pullModel } from "./shared/api-calls/aiApi";
+import prettyBytes from "pretty-bytes";
 
 function App() {
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User>();
-  const [myRoom, dispatch] = useReducer(myRoomReducer, undefined);
-  useEffect(() => {
-    const userData = loadUserData();
-    if (userData) {
-      setLoggedIn(true);
-      setCurrentUser(userData);
-    } else {
-      setLoggedIn(false);
-      setCurrentUser(undefined);
-    }
-  }, []);
+  const [isLoggedIn, setLoggedIn] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [completed, setCompleted] = useState("");
+  const [size, setSize] = useState("");
+  const [model, setModel] = useState(MODELS[0].value);
 
-  const onSignOut = (socket: Socket) => {
-    removeUserData();
+  function onSignOut(model: string) {
     setLoggedIn(false);
-    setCurrentUser(undefined);
-    if (dispatch) {
-      dispatch({
-        type: 'setRoom',
-        room: undefined
-      })      
-    }
-    socket.disconnect();
-  };
+    setLoading(false);
+    // deleteModel(model);
+  }
 
+  async function onLogin(selectedModel: string) {
+    setLoading(true);
+    try {
+      for await (const part of pullModel(selectedModel || model)) {
+        if (part.completed && part.total) {
+          setSize(prettyBytes(part.total));
+          setCompleted(prettyBytes(part.completed));
+        }
+        if (part.status === "success") {
+          setModel(selectedModel);
+          setLoggedIn(true);
+          setLoading(false);
+        }
+        if (part.status === "failed") {
+          console.log("an error occured");
+          setError("an error occured, please try again");
+        }
+      }
+    } catch (error) {
+      console.log("an error occured: ", error);
+      setError("an error occured, please try again");
+    }
+  }
+
+  function abort() {
+    abortAll();
+    setLoading(false);
+  }
   return (
-    <Router>
-      <Switch>
-        <PrivateRoute exact path='/' condition={isLoggedIn} redirectRoute='/auth'>
-          <MyRoomContext.Provider value={myRoom}>
-          <MyRoomDispatchContext.Provider value={dispatch}>
-            <Home signout={onSignOut} currentUser={currentUser || {} as User} />
-          </MyRoomDispatchContext.Provider>
-          </MyRoomContext.Provider>
-        </PrivateRoute>
-        <PrivateRoute exact path='/auth' condition={!isLoggedIn} redirectRoute='/'>
-          <Authenticate setLoggedIn={setLoggedIn} setCurrentUser={setCurrentUser} />
-        </PrivateRoute>
-      </Switch>
-    </Router>
+    <>
+      {isLoggedIn ? (
+        <ChatRoom close={onSignOut} model={model} />
+      ) : (
+        <Authenticate
+          login={onLogin}
+          abort={abort}
+          model={model}
+          loading={loading}
+          error={error}
+          size={size}
+          completed={completed}
+        />
+      )}
+    </>
   );
 }
 
-const PrivateRoute = ({ children, condition, redirectRoute, ...props } : any) => {
-  return (
-    <Route
-      {...props}
-      render={({ location }) =>
-        condition ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: redirectRoute,
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
-};
+// <Router>
+//   <Switch>
+//     <PrivateRoute path='/'>
+//     </PrivateRoute>
+//     <PrivateRoute exact path='/auth' condition={!isLoggedIn} redirectRoute='/'>
+//     </PrivateRoute>
+//   </Switch>
+// </Router>
+// const PrivateRoute = ({ children, condition, redirectRoute, ...props } : any) => {
+//   return (
+//     <Route
+//       {...props}
+//       render={({ location }) =>
+//         condition ? (
+//           children
+//         ) : (
+//           <Redirect
+//             to={{
+//               pathname: redirectRoute,
+//               state: { from: location },
+//             }}
+//           />
+//         )
+//       }
+//     />
+//   );
+// };
 
 export default App;

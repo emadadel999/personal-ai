@@ -1,26 +1,12 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-// import "bootstrap/dist/css/bootstrap.css";
-import "font-awesome/css/font-awesome.css";
-
-import "./main.scss";
 import App from "./App";
+import './styles/main.scss';
 
-// const loggerMiddleware = createLogger();
 
-// const persistentState = loadUserData();
-
-// const store = createStore(
-//   rootReducer,
-//   persistentState,
-//   applyMiddleware(thunkMiddleware, loggerMiddleware)
-// );
-
-// store.subscribe(() => {
-//   saveUserData({
-//     userReducer: store.getState().userReducer,
-//   });
-// });
+if ('virtualKeyboard' in navigator) {
+    (navigator.virtualKeyboard as any).overlaysContent = true;
+}
 
 const container = document.getElementById("app") as HTMLElement;
 const root = createRoot(container);

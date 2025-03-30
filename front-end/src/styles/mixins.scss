@@ -1,0 +1,46 @@
+@mixin flex-center {
+    @include flexbox();
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin flexbox() {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+@mixin flex($values) {
+    -webkit-box-flex: $values;
+    -moz-box-flex: $values;
+    -webkit-flex: $values;
+    -ms-flex: $values;
+    flex: $values;
+}
+
+@mixin wider-than($width) {
+    @media (min-width: $width) {
+        @content;
+    }
+}
+@mixin thinner-than($width) {
+    @media (max-width: $width) {
+        @content;
+    }
+}
+
+@mixin taller-than($height) {
+    @media (min-height: $height) {
+        @content;
+    }
+}
+
+@mixin shorter-than($height) {
+    @media (max-height: $height) {
+        @content;
+    }
+}
+
+
