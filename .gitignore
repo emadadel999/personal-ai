@@ -7,10 +7,13 @@ node_modules
 # production
 /front-end/dist
 /front-end/dev-dist
+/back-end/dist
+/back-end/dev-dist
 
 
 # misc
 /front-end/node_modules
+/back-end/node_modules
 /front-end/.DS_Store
 /front-end/*.local 
 /front-end/.env.development.local

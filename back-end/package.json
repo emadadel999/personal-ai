@@ -11,24 +11,19 @@
   "author": "Emad Adel",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.19.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.8.0",
-    "mongoose": "^8.2.0",
-    "ollama": "^0.5.14",
-    "socket.io": "^4.7.4"
+    "ollama": "^0.5.14"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^22.5.1",
     "nodemon": "^3.1.4",
-    "prisma": "^5.19.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },
