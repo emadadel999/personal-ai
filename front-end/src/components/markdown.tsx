@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import markdownit from 'markdown-it';
-import hljs from "highlight.js"; // https://highlightjs.org
+import hljs from "highlight.js";
 import { markdownItTable } from "markdown-it-table";
-// import { Remarkable } from "remarkable";
-// import { linkify } from 'remarkable/linkify';
 
 function renderMarkdownToHTML(markdown: string) {
   const md = new markdownit({
@@ -28,13 +26,7 @@ function renderMarkdownToHTML(markdown: string) {
   return { __html: renderedHTML };
 }
 
-export default function Markdown({
-  markdown,
-  className,
-}: {
-  markdown: string;
-  className: string;
-}) {
+export default function Markdown({markdown, className }: { markdown: string; className: string }) {
   const markup = renderMarkdownToHTML(markdown);
   return <p className={className} dangerouslySetInnerHTML={markup}></p>;
 }
